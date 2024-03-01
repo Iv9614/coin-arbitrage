@@ -1,0 +1,6 @@
+{
+  "name": "Python-Flask",
+  "description": "Flask / Python 3.8 <a class='el-link el-link--primary' href='https://github.com/iiidevops-v2-templates/ci-flask-webpage/blob/master/README.md' target='_blank'>webpage 範本說明</a><hr /><ul><li><strong>v2.0</strong>:更新CI自動化腳本</li></ul>",
+  "arguments": [
+  ]
+}
