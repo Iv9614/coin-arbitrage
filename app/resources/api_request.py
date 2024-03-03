@@ -41,10 +41,7 @@ class RequestClient:
         #     else proxies
         # )
 
-        # self.base_url = "https://dev.iiidevops.org/prod-api"
-        self.base_url = config.get("III_BASE_URL")
-
-        # self.base_url = config.get("")
+        self.base_url = config.get("BASE_URL")
         self.access_token = "1"
         self.expire_at = 0
         self._client = httpx.Client(
@@ -110,39 +107,39 @@ class RequestClient:
         url = "{}{}".format(self.base_url, url)
 
         # with self._client as client:
-        while True:
-            if headers:
-                headers.update({"Authorization": f"Bearer {self.access_token}"})
-            else:
-                headers = {"Authorization": f"Bearer {self.access_token}"}
+        # while True:
+        if headers:
+            headers.update({"X-BX-APIKEY": config.get("API_KEY")})
+        else:
+            headers = {"X-BX-APIKEY": config.get("API_KEY")}
 
-            api_response = self._client.request(
-                method=method,
-                url=url,
-                content=content,
-                data=data,
-                files=files,
-                json=json,
-                params=params,
-                headers=headers,
-                auth=auth,
-                follow_redirects=follow_redirects,
-            )
+        api_response = self._client.request(
+            method=method,
+            url=url,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            params=params,
+            headers=headers,
+            auth=auth,
+            follow_redirects=follow_redirects,
+        )
 
-            if api_response.status_code // 100 == 2:
-                return api_response.json()
+        if api_response.status_code // 100 == 2:
+            return api_response.json()["data"]
 
-            elif (
-                api_response.status_code == 401
-                and api_response.reason_phrase == "UNAUTHORIZED"
-            ):
-                self.login()
-                continue
+        # elif (
+        #     api_response.status_code == 401
+        #     and api_response.reason_phrase == "UNAUTHORIZED"
+        # ):
+        #     self.login()
+        # continue
 
-            else:
-                api_response = js.loads(api_response.content.decode("ascii"))["message"]
+        else:
+            api_response = js.loads(api_response.content.decode("ascii"))["message"]
 
-                raise Exception(js.dumps(api_response))
+            raise Exception(js.dumps(api_response))
 
     def get(
         self,
